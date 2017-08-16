@@ -1,0 +1,24 @@
+{
+    "name": "phpkit/base",
+    "description": "phpkit base类，基于 phalcon",
+    "keywords": [
+        "core"
+    ],
+    "homepage": "http://www.phpkit.me/",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "wen",
+            "email": "wen190@163.com"
+        }
+    ],
+    "config": {
+        "preferred-install": "dist"
+    },
+
+     "autoload": {
+        "psr-4": {
+            "phpkit\\base\\": "./"
+        }
+    }
+}
