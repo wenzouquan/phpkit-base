@@ -1,5 +1,5 @@
 <?php
-namespace phpkit\core;
+namespace phpkit\base;
 class AdminController extends BaseController {
 	public function initialize() {
 		parent::initialize();

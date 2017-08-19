@@ -1,4 +1,7 @@
 {
+    "require": {
+        "phpkit/core": "dev-master"
+    },
     "name": "phpkit/base",
     "description": "phpkit base类，基于phalcon",
     "keywords": [
@@ -6,17 +9,15 @@
     ],
     "homepage": "http://www.phpkit.me/",
     "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "wen",
-            "email": "wen190@163.com"
-        }
-    ],
+    "authors": [{
+        "name": "wen",
+        "email": "wen190@163.com"
+    }],
     "config": {
         "preferred-install": "dist"
     },
 
-     "autoload": {
+    "autoload": {
         "psr-4": {
             "phpkit\\base\\": "./"
         }

@@ -1,5 +1,5 @@
 <?php
-namespace phpkit\core;
+namespace phpkit\base;
 use Phalcon\Mvc\Controller;
 use phpkit\backend\View as backendView;
 
@@ -18,7 +18,7 @@ class BaseController extends Controller {
 		}
 		echo '<script language="javascript" type="text/javascript">' . $msg . ' window.location.href="' . $new_url . '"; </script>';
 
-		exit();
+		die();
 	}
 
 	public function fetch($controllerName = "", $actionName = "") {

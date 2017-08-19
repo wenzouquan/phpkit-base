@@ -1,5 +1,5 @@
 <?php
-namespace phpkit\core;
+namespace phpkit\base;
 use phpkit\core\Phpkit as Phpkit;
 
 //设置modelsMetadata缓存
@@ -12,9 +12,12 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		if ($name) {
 			$this->setSource($name);
 		}
+
 	}
-	public function initialize() {
-		$this->setConnectionService('phpkitDb');
+	public function initialize($db = "") {
+		if ($db) {
+			$this->setConnectionService($db);
+		}
 	}
 
 	public function getPk() {
