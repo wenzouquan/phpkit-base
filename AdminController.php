@@ -18,7 +18,7 @@ class AdminController extends BaseController {
 		if (!empty($adminUserInfo['user_name'])) {
 			return true;
 		}
-		$superUser = $this->phpkitConfig->get('superUser', 'setIfNull');
+		$superUser = $this->getDi()->getConfig()->get('superUser', 'setIfNull');
 		//提交登录
 		if ($this->request->isPost() && $this->request->getPost('setAdminUserInfo') == 1) {
 
