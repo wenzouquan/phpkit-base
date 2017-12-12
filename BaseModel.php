@@ -77,7 +77,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		}
 
 		if (is_array($op) || empty($op)) {
-			$op = array_merge($this->findOptions, $op);
+			$op = array_merge($this->findOptions, (array)$op);
 			ksort($op);
 		}
 		$res = null;
@@ -216,6 +216,8 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$this->findOptions = array(); //清空查询
 		return $res;
 	}
+
+
 //添加get缓存
 	public function AddCacheForGet($key) {
 		$tableName = $this->getTableName();
