@@ -14,10 +14,10 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		}
 
 	}
-	public function initialize($db = "") {
-		if ($db) {
-			$this->setConnectionService($db);
-		}
+	public function initialize() {
+		// if ($db) {
+		// 	$this->setConnectionService($db);
+		// }
 	}
 
 	public function getPk() {
@@ -91,7 +91,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		if ($cacheKeyPk) {
 			$res = Phpkit::cache()->get($cacheKeyPk);
 		}
-		if (empty($res[$pk])) {
+		if (empty($res->$pk)) {
 			$res = $this->findFirst($op);
 			//查询到的结果
 			if ($res) {

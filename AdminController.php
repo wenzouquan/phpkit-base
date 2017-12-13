@@ -8,7 +8,8 @@ class AdminController extends BaseController {
 		//验证是否有权限
 		$this->checkAuth();
 		//$this->loginOut();
-		$this->view->adminUserInfo = $this->adminUserInfo = $this->session->get('adminUserInfo');
+		// $this->adminUserInfo = $this->session->get('adminUserInfo');
+		//var_dump($this->adminUserInfo);
 
 	}
 	//验证是否登录
@@ -63,8 +64,18 @@ class AdminController extends BaseController {
 		$this->session->set('adminUserInfo', $adminUserInfo);
 	}
 //验证是否有权限
-	public function checkAuth() {
-
+    protected function checkAuth() {
+    	 
+    	$authCode= implode("/", array($this->getDi()->getDispatcher()->getControllerName() ,$this->getDi()->getDispatcher()->getActionName()));
+    	$adminUserInfo = $this->session->get('adminUserInfo');
+    	//最高管理员处理逻辑
+    	if($adminUserInfo['type']=="super"){
+    	}else{	
+    		$auth = \phpkit\auth\auth();
+    		if(!$auth->check($this->adminUserInfo['id'],$authCode)){
+    			 $this->error('没有权限访问 '.$auth->AuthCheckMsg['msg']);
+    		}
+    	}
 	}
 
 	public function loginOut() {
