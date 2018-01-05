@@ -2,7 +2,6 @@
 namespace phpkit\base;
 use Phalcon\Mvc\Controller;
 use phpkit\backend\View as backendView;
-use phpkit\core\Phpkit as Phpkit;
 
 class BaseController extends Controller {
 	public function initialize() {

@@ -14,10 +14,10 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		}
 
 	}
-	public function initialize() {
-		// if ($db) {
-		// 	$this->setConnectionService($db);
-		// }
+	public function initialize($db = "") {
+		if ($db) {
+			$this->setConnectionService($db);
+		}
 	}
 
 	public function getPk() {
@@ -77,7 +77,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		}
 
 		if (is_array($op) || empty($op)) {
-			$op = array_merge($this->findOptions, (array)$op);
+			$op = array_merge($this->findOptions, $op);
 			ksort($op);
 		}
 		$res = null;
@@ -216,8 +216,6 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$this->findOptions = array(); //清空查询
 		return $res;
 	}
-
-
 //添加get缓存
 	public function AddCacheForGet($key) {
 		$tableName = $this->getTableName();
