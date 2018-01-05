@@ -21,7 +21,6 @@ class AdminController extends BaseController {
 		$superUser = $this->getDi()->getConfig()->get('superUser', 'setIfNull');
 		//提交登录
 		if ($this->request->isPost() && $this->request->getPost('setAdminUserInfo') == 1) {
-
 			$where = array(
 				'user_name' => $this->request->getPost('user_name'),
 				'password' => md5($this->request->getPost('password')),

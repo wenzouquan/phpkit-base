@@ -34,7 +34,7 @@ class BaseController extends Controller {
 
 	public function adminDisplay($controllerName = "", $actionName = "") {
 		$content = $this->fetch($controllerName, $actionName);
-		$backendView = new backendView();
+		$backendView = new backendView(['phpkitApp'=>$this]);
 		$backendView->display($content);
 	}
 
