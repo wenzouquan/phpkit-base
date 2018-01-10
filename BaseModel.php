@@ -54,6 +54,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 				$bind[$key] = is_array($value) ? $value[1] : $value;
 			}
 			$this->findOptions = array('conditions' => $where, 'bind' => $bind);
+			var_dump($this->findOptions);
 		}
 
 		return $this;
@@ -197,6 +198,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 			$op = array_merge($this->findOptions, $op);
 			ksort($op);
 		}
+
 		if (empty($op['limit'])) {
 			//没有使用limit 全查，需要缓存结果
 			$tableName = $this->getTableName();
@@ -209,8 +211,12 @@ class BaseModel extends \Phalcon\Mvc\Model {
 				$this->AddCacheForGet($cacheKey);
 			}
 		} else {
-			$res['recordsFiltered'] = $this->count(array('conditions' => $op['conditions']));
+			$countop = $op;
+			unset($countop['limit']);
+			unset($countop['order']);
+			$res['recordsFiltered'] = $this->count($countop);
 			$res['recordsTotal'] = $this->count();
+			
 			$res['list'] = $this->find($op);
 		}
 		$this->findOptions = array(); //清空查询
