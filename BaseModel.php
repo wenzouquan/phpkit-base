@@ -54,7 +54,6 @@ class BaseModel extends \Phalcon\Mvc\Model {
 				$bind[$key] = is_array($value) ? $value[1] : $value;
 			}
 			$this->findOptions = array('conditions' => $where, 'bind' => $bind);
-			var_dump($this->findOptions);
 		}
 
 		return $this;
