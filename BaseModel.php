@@ -77,7 +77,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		}
 
 		if (is_array($op) || empty($op)) {
-			$op = array_merge($this->findOptions, $op);
+			$op = array_merge($this->findOptions, (array)$op);
 			ksort($op);
 		}
 		$res = null;
@@ -91,7 +91,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		if ($cacheKeyPk) {
 			$res = Phpkit::cache()->get($cacheKeyPk);
 		}
-		if (empty($res->$pk)) {
+		if ($res!=='nodata' && empty($res)) {
 			$res = $this->findFirst($op);
 			//查询到的结果
 			if ($res) {
@@ -101,11 +101,13 @@ class BaseModel extends \Phalcon\Mvc\Model {
 					Phpkit::cache()->save($cacheKey, $cacheKeyPk); //缓存查询条件
 					$this->setCacheByPk($res->$pk, $cacheKey);
 				}
+			}else{
+				$cacheKey?Phpkit::cache()->save($cacheKey, 'nodata'):''; //缓存主键结果
+				$cacheKeyPk?Phpkit::cache()->save($cacheKeyPk, 'nodata'):''; //缓存主键结果
 			}
 		}
 		return $res;
 	}
-
 	//主键下有多少缓存
 	public function setCacheByPk($id, $key) {
 		$tableName = $this->getTableName();
