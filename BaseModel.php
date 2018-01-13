@@ -53,7 +53,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 				$where .= " {$andOr} {$key} {$join} $map";
 				$bind[$key] = is_array($value) ? $value[1] : $value;
 			}
-			$this->findOptions = array('conditions' => $where, 'bind' => $bind);
+			$this->findOptions =array_merge($this->findOptions,array('conditions' => $where, 'bind' => $bind)) ;
 		}
 
 		return $this;
@@ -189,17 +189,18 @@ class BaseModel extends \Phalcon\Mvc\Model {
 			}
 			$this->findOptions['limit'] = $arr;
 		}
+
 		return $this;
 	}
 
 	//加载列表
 	public function select($op = array()) {
+
 		$res = array();
 		if (is_array($op)) {
 			$op = array_merge($this->findOptions, $op);
 			ksort($op);
 		}
-
 		if (empty($op['limit'])) {
 			//没有使用limit 全查，需要缓存结果
 			$tableName = $this->getTableName();
@@ -211,13 +212,15 @@ class BaseModel extends \Phalcon\Mvc\Model {
 				Phpkit::cache()->save($cacheKey, $res);
 				$this->AddCacheForGet($cacheKey);
 			}
+			$res['recordsFiltered'] = count($res);
+			$res['recordsTotal'] = count($res);
+			$res['list'] = $this->find($op);
 		} else {
 			$countop = $op;
 			unset($countop['limit']);
 			unset($countop['order']);
 			$res['recordsFiltered'] = $this->count($countop);
 			$res['recordsTotal'] = $this->count();
-			
 			$res['list'] = $this->find($op);
 		}
 		$this->findOptions = array(); //清空查询
