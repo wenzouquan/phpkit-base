@@ -91,7 +91,8 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		if ($cacheKeyPk) {
 			$res = Phpkit::cache()->get($cacheKeyPk);
 		}
-		if ($res!=='nodata' && empty($res)) {
+		//$res!=='nodata' &&
+		if ( empty($res)) {
 			$res = $this->findFirst($op);
 			//查询到的结果
 			if ($res) {
@@ -101,10 +102,11 @@ class BaseModel extends \Phalcon\Mvc\Model {
 					Phpkit::cache()->save($cacheKey, $cacheKeyPk); //缓存查询条件
 					$this->setCacheByPk($res->$pk, $cacheKey);
 				}
-			}else{
-				$cacheKey?Phpkit::cache()->save($cacheKey, 'nodata'):''; //缓存主键结果
-				$cacheKeyPk?Phpkit::cache()->save($cacheKeyPk, 'nodata'):''; //缓存主键结果
 			}
+			// else{
+			// 	$cacheKey?Phpkit::cache()->save($cacheKey, 'nodata'):''; //缓存主键结果
+			// 	$cacheKeyPk?Phpkit::cache()->save($cacheKeyPk, 'nodata'):''; //缓存主键结果
+			// }
 		}
 		return $res;
 	}
@@ -141,6 +143,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 
 	//删查询缓存
 	public function delCache() {
+
 		$pk = $this->getPk();
 		$tableName = $this->getTableName();
 		$cacheKeyPk = $tableName . "_" . $this->$pk;
