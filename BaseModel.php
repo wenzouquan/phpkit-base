@@ -215,9 +215,6 @@ class BaseModel extends \Phalcon\Mvc\Model {
 				Phpkit::cache()->save($cacheKey, $res);
 				$this->AddCacheForGet($cacheKey);
 			}
-			$res['recordsFiltered'] = count($res);
-			$res['recordsTotal'] = count($res);
-			$res['list'] = $this->find($op);
 		} else {
 			$countop = $op;
 			unset($countop['limit']);
