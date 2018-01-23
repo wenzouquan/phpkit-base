@@ -47,7 +47,7 @@ class AdminController extends BaseController {
 		}
 
 		//有设置登录地址，跳转登录
-		if ($this->LoginUrl) {
+		if (isset($this->LoginUrl) ){
 			$this->jump("", $this->LoginUrl);
 		}
 		//直接显示登录页面
