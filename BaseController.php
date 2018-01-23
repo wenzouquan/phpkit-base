@@ -8,6 +8,8 @@ class BaseController extends Controller {
 		//parent::initialize();
 		$this->ControllerName = \phpkit\helper\convertUnderline($this->dispatcher->getControllerName());
 		$this->ActionName = $this->dispatcher->getActionName();
+	       $this->appSetting = $this->di->getSetting();
+		$this->view->appSetting = json_decode(json_encode($this->appSetting)); 
 	}
 
 	protected function jump($msg = "", $url = "") {
