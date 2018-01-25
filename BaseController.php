@@ -8,7 +8,7 @@ class BaseController extends Controller {
 		//parent::initialize();
 		$this->ControllerName = \phpkit\helper\convertUnderline($this->dispatcher->getControllerName());
 		$this->ActionName = $this->dispatcher->getActionName();
-	       $this->appSetting = $this->di->getSetting();
+	    $this->appSetting = $this->di->getSetting();
 		$this->view->appSetting = json_decode(json_encode($this->appSetting)); 
 	}
 
@@ -34,10 +34,15 @@ class BaseController extends Controller {
 		echo $this->fetch($controllerName, $actionName);
 	}
 
-	public function adminDisplay($controllerName = "", $actionName = "") {
+	 public function adminDisplay($controllerName = "", $actionName = "") {
 		$content = $this->fetch($controllerName, $actionName);
-		$backendView = new backendView(['phpkitApp'=>$this]);
-		$backendView->display($content);
+		if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){
+			echo $content;
+		}else{
+			$backendView = new backendView(['phpkitApp'=>$this]);
+		    $backendView->display($content);
+		}
+		
 	}
 
 }
