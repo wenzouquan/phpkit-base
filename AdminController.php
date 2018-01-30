@@ -9,6 +9,10 @@ class AdminController extends BaseController {
 		$this->checkAuth();
 		//$this->loginOut();
 		$this->view->adminUserInfo = $this->adminUserInfo = $this->session->get('adminUserInfo');
+		$this->ControllerName = \phpkit\helper\convertUnderline($this->dispatcher->getControllerName());
+		$this->ActionName = $this->dispatcher->getActionName();
+	    $this->appSetting = $this->di->getSetting();
+		$this->view->appSetting = json_decode(json_encode($this->appSetting)); 
 
 	}
 	//验证是否登录
