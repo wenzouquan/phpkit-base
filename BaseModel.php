@@ -65,7 +65,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 	}
 
 	//加载一条数据, 默认会缓存数据
-	public function load($op = array()) {
+	public function load($op = array(),$reload=false) {
 
 		$tableName = $this->getTableName();
 		$pk = $this->getPk();
@@ -87,12 +87,13 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		} else {
 			$cacheKeyPk = $tableName . "_" . $op; //通过主键来查询的
 		}
+
 		//通过主键缓存取值
-		if ($cacheKeyPk) {
+		if ($cacheKeyPk && $reload===false) {
 			$res = Phpkit::cache()->get($cacheKeyPk);
 		}
 		//$res!=='nodata' &&
-		if ( empty($res)) {
+		if ( empty($res->$pk)) {
 			$res = $this->findFirst($op);
 			//查询到的结果
 			if ($res) {
@@ -197,7 +198,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 	}
 
 	//加载列表
-	public function select($op = array()) {
+	public function select($op = array(),$reload=false) {
 
 		$res = array();
 		if (is_array($op)) {
@@ -208,7 +209,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 			//没有使用limit 全查，需要缓存结果
 			$tableName = $this->getTableName();
 			$cacheKey = $tableName . "_get_" . md5(json_encode($op));
-			if (Phpkit::cache()->exists($cacheKey)) {
+			if (Phpkit::cache()->exists($cacheKey) && $reload===false) {
 				$res = Phpkit::cache()->get($cacheKey);
 			} else {
 				$res = $this->find($op);
