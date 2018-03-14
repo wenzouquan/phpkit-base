@@ -288,5 +288,40 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$this->findOptions = array(); //清空查询
 		return $flag;
 	}
+	public function setInc($id,$field="",$step=1){
+		$model = $this->load($id);
+	  	$code = 0;
+	  	if(is_object($model)){
+	  		$model->$field = intval($model->$field)+$step;
+		  	if(!$model->save()){
+		  		$errors=$model->error();
+		  		$code = 3;
+	  			$msg ="系统错误 ： ".implode(",", $errors);
+		  	} 	
+	  	}else{
+	  		$code = 1;
+	  		$msg ="$id的数据";
+	  	}
+	  	return ['code'=>$code,'msg'=>$msg,'data'=>$model->$field];
+
+	}
+
+	public function setDec($id,$field="",$step=1){
+		$model = $this->load($id);
+	  	$code = 0;
+	  	if(is_object($model)){
+	  		$model->$field = intval($model->$field)-$step;
+		  	if(!$model->save()){
+		  		$errors=$model->error();
+		  		$code = 3;
+	  			$msg ="系统错误 ： ".implode(",", $errors);
+		  	} 	
+	  	}else{
+	  		$code = 1;
+	  		$msg ="$id的数据";
+	  	}
+	  	return ['code'=>$code,'msg'=>$msg,'data'=>$model->$field];
+
+	}
 
 }
