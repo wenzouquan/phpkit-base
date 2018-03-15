@@ -259,15 +259,19 @@ class BaseModel extends \Phalcon\Mvc\Model {
 	}
 
 	//删除
+	
+	//删除
 	public function remove($op = array()) {
+
 		if (!is_array($op) && !empty($op)) {
 			$res = $this->load($op);
 			$lists = $res ? array($res) : array();
 
 		}
 		if (is_array($op)) {
-			$res = $this->get($op);
-			$lists = $res['list'] ? $res['list'] : array();
+			$lists = $this->select($op);
+			 
+			//$lists = $res['list'] ? $res['list'] : array();
 		}
 		$this->deleteLists = $lists;
 		$flag = 1;
