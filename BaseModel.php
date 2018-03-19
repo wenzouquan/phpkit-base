@@ -12,6 +12,9 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		if ($name) {
 			$this->setSource($name);
 		}
+		$this->app = \phpkit\helper\getApp();
+		$this->cache = $this->app->cache;
+
 
 	}
 	public function initialize($db = "") {
@@ -83,14 +86,14 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$res = null;
 		if (is_array($op)) {
 			$cacheKey = $tableName . "_" . md5(json_encode($op)); //查询缓存
-			$cacheKeyPk = Phpkit::cache()->get($cacheKey); //所的缓存用主键来存
+			$cacheKeyPk = $this->cache->get($cacheKey); //所的缓存用主键来存
 		} else {
 			$cacheKeyPk = $tableName . "_" . $op; //通过主键来查询的
 		}
 
 		//通过主键缓存取值
 		if ($cacheKeyPk && $reload===false) {
-			$res = Phpkit::cache()->get($cacheKeyPk);
+			$res = $this->cache->get($cacheKeyPk);
 		}
 		//$res!=='nodata' &&
 		if ( empty($res->$pk)) {
@@ -98,15 +101,15 @@ class BaseModel extends \Phalcon\Mvc\Model {
 			//查询到的结果
 			if ($res) {
 				$cacheKeyPk = $tableName . "_" . $res->$pk;
-				Phpkit::cache()->save($cacheKeyPk, $res); //缓存主键结果
+				$this->cache->save($cacheKeyPk, $res); //缓存主键结果
 				if ($cacheKey) {
-					Phpkit::cache()->save($cacheKey, $cacheKeyPk); //缓存查询条件
+					$this->cache->save($cacheKey, $cacheKeyPk); //缓存查询条件
 					$this->setCacheByPk($res->$pk, $cacheKey);
 				}
 			}
 			// else{
-			// 	$cacheKey?Phpkit::cache()->save($cacheKey, 'nodata'):''; //缓存主键结果
-			// 	$cacheKeyPk?Phpkit::cache()->save($cacheKeyPk, 'nodata'):''; //缓存主键结果
+			// 	$cacheKey?$this->cache->save($cacheKey, 'nodata'):''; //缓存主键结果
+			// 	$cacheKeyPk?$this->cache->save($cacheKeyPk, 'nodata'):''; //缓存主键结果
 			// }
 		}
 		return $res;
@@ -116,11 +119,11 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$tableName = $this->getTableName();
 		$cacheKeyPk = $tableName . "_keys_" . $id;
 		$data = array();
-		if (Phpkit::cache()->exists($cacheKeyPk)) {
-			$data = (array) Phpkit::cache()->get($cacheKeyPk);
+		if ($this->cache->exists($cacheKeyPk)) {
+			$data = (array) $this->cache->get($cacheKeyPk);
 		}
 		$data[$key] = 1;
-		Phpkit::cache()->save($cacheKeyPk, $data);
+		$this->cache->save($cacheKeyPk, $data);
 	}
 
 //这主键下所查询缓存
@@ -128,8 +131,8 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$tableName = $this->getTableName();
 		$cacheKeyPk = $tableName . "_keys_" . $id;
 		$data = array();
-		if (Phpkit::cache()->exists($cacheKeyPk)) {
-			$data = (array) Phpkit::cache()->get($cacheKeyPk);
+		if ($this->cache->exists($cacheKeyPk)) {
+			$data = (array) $this->cache->get($cacheKeyPk);
 		}
 		return $data;
 	}
@@ -138,7 +141,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 	public function delCacheByPk($id) {
 		$data = $this->getCacheByPk($id);
 		foreach ($data as $key => $value) {
-			$data = (array) Phpkit::cache()->delete($key);
+			$data = (array) $this->cache->delete($key);
 		}
 	}
 
@@ -148,8 +151,8 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$pk = $this->getPk();
 		$tableName = $this->getTableName();
 		$cacheKeyPk = $tableName . "_" . $this->$pk;
-		if (Phpkit::cache()->exists($cacheKeyPk)) {
-			Phpkit::cache()->delete($cacheKeyPk); //缓存结果
+		if ($this->cache->exists($cacheKeyPk)) {
+			$this->cache->delete($cacheKeyPk); //缓存结果
 		}
 		$this->delCacheByPk($this->$pk);
 		//删除get 下的缓存
@@ -209,11 +212,11 @@ class BaseModel extends \Phalcon\Mvc\Model {
 			//没有使用limit 全查，需要缓存结果
 			$tableName = $this->getTableName();
 			$cacheKey = $tableName . "_get_" . md5(json_encode($op));
-			if (Phpkit::cache()->exists($cacheKey) && $reload===false) {
-				$res = Phpkit::cache()->get($cacheKey);
+			if ($this->cache->exists($cacheKey) && $reload===false) {
+				$res = $this->cache->get($cacheKey);
 			} else {
 				$res = $this->find($op);
-				Phpkit::cache()->save($cacheKey, $res);
+				$this->cache->save($cacheKey, $res);
 				$this->AddCacheForGet($cacheKey);
 			}
 		} else {
@@ -232,18 +235,18 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$tableName = $this->getTableName();
 		$cacheKey = $tableName . "_get";
 		$data = array();
-		if (Phpkit::cache()->exists($cacheKey)) {
-			$data = (array) Phpkit::cache()->get($cacheKey);
+		if ($this->cache->exists($cacheKey)) {
+			$data = (array) $this->cache->get($cacheKey);
 		}
 		$data[$key] = 1;
-		Phpkit::cache()->save($cacheKey, $data);
+		$this->cache->save($cacheKey, $data);
 
 	}
 //删除一个表get缓存
 	public function DelCacheForGet() {
 		$data = $this->GetCacheForGet();
 		foreach ($data as $key => $value) {
-			Phpkit::cache()->delete($key);
+			$this->cache->delete($key);
 		}
 
 	}
@@ -252,26 +255,22 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$tableName = $this->getTableName();
 		$cacheKey = $tableName . "_get";
 		$data = array();
-		if (Phpkit::cache()->exists($cacheKey)) {
-			$data = (array) Phpkit::cache()->get($cacheKey);
+		if ($this->cache->exists($cacheKey)) {
+			$data = (array) $this->cache->get($cacheKey);
 		}
 		return $data;
 	}
 
 	//删除
-	
-	//删除
 	public function remove($op = array()) {
-
 		if (!is_array($op) && !empty($op)) {
 			$res = $this->load($op);
 			$lists = $res ? array($res) : array();
 
 		}
 		if (is_array($op)) {
-			$lists = $this->select($op);
-			 
-			//$lists = $res['list'] ? $res['list'] : array();
+			$res = $this->get($op);
+			$lists = $res['list'] ? $res['list'] : array();
 		}
 		$this->deleteLists = $lists;
 		$flag = 1;
@@ -292,6 +291,7 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$this->findOptions = array(); //清空查询
 		return $flag;
 	}
+
 	public function setInc($id,$field="",$step=1){
 		$model = $this->load($id);
 	  	$code = 0;
