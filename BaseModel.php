@@ -277,10 +277,17 @@ class BaseModel extends \Phalcon\Mvc\Model {
 
 		}
 		if (is_array($op)) {
-			$res = $this->get($op);
-			$lists = $res['list'] ? $res['list'] : array();
+			$res = $this->select($op,false); 
+
+			$lists = $res;
 		}
+		
+		if(empty($lists)){
+			return 1;
+		}
+		
 		$this->deleteLists = $lists;
+
 		$flag = 1;
 		if (!empty($lists)) {
 			foreach ($lists as $key => $list) {
