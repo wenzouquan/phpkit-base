@@ -306,6 +306,12 @@ class BaseModel extends \Phalcon\Mvc\Model {
 		$this->findOptions = array(); //清空查询
 		return $flag;
 	}
+	public function countRes($op=[]){
+		$op = array_merge($this->findOptions, $op);
+		$count = $this->count($op);
+		$this->findOptions = array(); //清空查询
+		return $count;
+	}
 
 	public function setInc($id,$field="",$step=1){
 		$model = $this->load($id);
